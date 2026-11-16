@@ -1,0 +1,16 @@
+# WiFi (wlp3s0) disconnects during the benchmark (Nov 12 on), PST. Each lasted about 4 s (beacon loss, reconnect).
+# Source: wpa_supplicant CTRL-EVENT-DISCONNECTED lines in /var/log/syslog.1 and /var/log/syslog (continuous from
+# 2026-11-09, no rate-limit or dropped-message warnings). The Nov 15-16 entries match the drops observed live.
+2026-11-12T07:06:54-08:00
+2026-11-12T08:25:42-08:00
+2026-11-12T08:43:34-08:00
+2026-11-12T09:28:16-08:00
+2026-11-12T10:18:45-08:00
+2026-11-13T06:42:22-08:00
+2026-11-15T17:24:08-08:00
+2026-11-15T21:01:48-08:00
+2026-11-15T21:07:35-08:00
+2026-11-15T22:29:33-08:00
+2026-11-15T23:18:55-08:00
+2026-11-16T00:57:12-08:00
+2026-11-16T05:26:27-08:00

@@ -1,0 +1,12 @@
+jobs/
+invalid/
+logs/
+tb2/
+livedin/hermes/
+livedin/openbot/
+hermes/payload.tar
+openbot/payload/
+openbot/payload.tar
+openbot/golden-profile/
+openbot/*.so
+__pycache__/

@@ -1,0 +1,289 @@
+{
+ "pricing_usd_per_mtok": {
+  "input": 0.15,
+  "cached": 0.003,
+  "output": 0.6
+ },
+ "cells": {
+  "fresh/hermes": {
+   "passed": 65,
+   "n": 89,
+   "rate": 0.7303,
+   "wilson95": [
+    0.63,
+    0.8116
+   ],
+   "task_cost_usd": 3.7197,
+   "cost_per_solved_usd": 0.0572,
+   "median_working_min": 4.29,
+   "total_working_min": 834.7,
+   "agent_timeouts": 8,
+   "verifier_timeouts": 1,
+   "exceptions": {
+    "AgentTimeoutError": 8,
+    "NonZeroAgentExitCodeError": 2,
+    "VerifierTimeoutError": 1
+   },
+   "harness_errors": {
+    "renderer_crashed": 0,
+    "gateway_disconnected": 2
+   },
+   "provider_incidents": 0,
+   "trials_with_wifi_drop": 1,
+   "trials_with_oom_kill": 3,
+   "trials_harness_process_oom_killed": 0
+  },
+  "fresh/openbot": {
+   "passed": 58,
+   "n": 89,
+   "rate": 0.6517,
+   "wilson95": [
+    0.5483,
+    0.7425
+   ],
+   "task_cost_usd": 2.8093,
+   "cost_per_solved_usd": 0.0484,
+   "median_working_min": 3.68,
+   "total_working_min": 911.5,
+   "agent_timeouts": 10,
+   "verifier_timeouts": 2,
+   "exceptions": {
+    "AgentTimeoutError": 10,
+    "NonZeroAgentExitCodeError": 2,
+    "VerifierTimeoutError": 2
+   },
+   "harness_errors": {
+    "renderer_crashed": 2,
+    "gateway_disconnected": 0
+   },
+   "provider_incidents": 1,
+   "trials_with_wifi_drop": 1,
+   "trials_with_oom_kill": 2,
+   "trials_harness_process_oom_killed": 2
+  },
+  "livedin/hermes": {
+   "passed": 71,
+   "n": 89,
+   "rate": 0.7978,
+   "wilson95": [
+    0.7028,
+    0.8681
+   ],
+   "task_cost_usd": 3.8164,
+   "cost_per_solved_usd": 0.0538,
+   "median_working_min": 4.2,
+   "total_working_min": 900.6,
+   "agent_timeouts": 10,
+   "verifier_timeouts": 0,
+   "exceptions": {
+    "AgentTimeoutError": 10,
+    "NonZeroAgentExitCodeError": 1
+   },
+   "harness_errors": {
+    "renderer_crashed": 0,
+    "gateway_disconnected": 1
+   },
+   "provider_incidents": 0,
+   "trials_with_wifi_drop": 3,
+   "trials_with_oom_kill": 1,
+   "trials_harness_process_oom_killed": 1,
+   "learning_cost_usd": 1.8815,
+   "cost_per_solved_incl_learning_usd": 0.0803,
+   "learning_outcomes": {
+    "review:memory": 1,
+    "review:skill": 42,
+    "review:skill+memory": 46
+   }
+  },
+  "livedin/openbot": {
+   "passed": 64,
+   "n": 89,
+   "rate": 0.7191,
+   "wilson95": [
+    0.6182,
+    0.8019
+   ],
+   "task_cost_usd": 2.7862,
+   "cost_per_solved_usd": 0.0435,
+   "median_working_min": 4.26,
+   "total_working_min": 780.4,
+   "agent_timeouts": 14,
+   "verifier_timeouts": 0,
+   "exceptions": {
+    "AgentTimeoutError": 14
+   },
+   "harness_errors": {
+    "renderer_crashed": 1,
+    "gateway_disconnected": 0
+   },
+   "provider_incidents": 0,
+   "trials_with_wifi_drop": 6,
+   "trials_with_oom_kill": 3,
+   "trials_harness_process_oom_killed": 3,
+   "learning_cost_usd": 0.0679,
+   "cost_per_solved_incl_learning_usd": 0.0446,
+   "learning_outcomes": {
+    "failed": 1,
+    "review:memories": 72,
+    "skipped_by_harness": 16
+   }
+  }
+ },
+ "paired": {
+  "fresh: hermes vs openbot": {
+   "both": 53,
+   "only_first": 12,
+   "only_second": 5,
+   "neither": 19,
+   "mcnemar_exact_p": 0.1435
+  },
+  "livedin: hermes vs openbot": {
+   "both": 59,
+   "only_first": 12,
+   "only_second": 5,
+   "neither": 13,
+   "mcnemar_exact_p": 0.1435
+  },
+  "hermes: livedin vs fresh": {
+   "both": 61,
+   "only_first": 10,
+   "only_second": 4,
+   "neither": 14,
+   "mcnemar_exact_p": 0.1796
+  },
+  "openbot: livedin vs fresh": {
+   "both": 54,
+   "only_first": 10,
+   "only_second": 4,
+   "neither": 21,
+   "mcnemar_exact_p": 0.1796
+  }
+ },
+ "sensitivity_first_graded_attempt": {
+  "fresh/hermes": {
+   "passed_kept": 65,
+   "passed_first_graded": 65,
+   "tasks_that_differ": []
+  },
+  "fresh/openbot": {
+   "passed_kept": 58,
+   "passed_first_graded": 57,
+   "tasks_that_differ": [
+    {
+     "task": "winning-avg-corewars",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "fresh-openbot-restartfail"
+    }
+   ]
+  },
+  "livedin/hermes": {
+   "passed_kept": 71,
+   "passed_first_graded": 69,
+   "tasks_that_differ": [
+    {
+     "task": "protein-assembly",
+     "kept": 0,
+     "first_graded": 1,
+     "archive": "livedin-hermes-run1"
+    },
+    {
+     "task": "gcode-to-text",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-hermes-reviewfail"
+    },
+    {
+     "task": "overfull-hbox",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-hermes-reviewfail"
+    },
+    {
+     "task": "rstan-to-pystan",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-hermes-reviewfail"
+    },
+    {
+     "task": "winning-avg-corewars",
+     "kept": 0,
+     "first_graded": 1,
+     "archive": "livedin-hermes-reviewfail"
+    },
+    {
+     "task": "query-optimize",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-hermes-verifiertimeout"
+    }
+   ]
+  },
+  "livedin/openbot": {
+   "passed_kept": 64,
+   "passed_first_graded": 63,
+   "tasks_that_differ": [
+    {
+     "task": "torch-tensor-parallelism",
+     "kept": 0,
+     "first_graded": 1,
+     "archive": "livedin-openbot-netfail"
+    },
+    {
+     "task": "overfull-hbox",
+     "kept": 0,
+     "first_graded": 1,
+     "archive": "livedin-openbot-dotname"
+    },
+    {
+     "task": "rstan-to-pystan",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-openbot-dotname"
+    },
+    {
+     "task": "schemelike-metacircular-eval",
+     "kept": 0,
+     "first_graded": 1,
+     "archive": "livedin-openbot-dotname"
+    },
+    {
+     "task": "polyglot-c-py",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-openbot-dotname"
+    },
+    {
+     "task": "llm-inference-batching-scheduler",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-openbot-restartfail"
+    },
+    {
+     "task": "bn-fit-modify",
+     "kept": 1,
+     "first_graded": 0,
+     "archive": "livedin-openbot-restartfail"
+    }
+   ]
+  }
+ },
+ "discarded_attempts": {
+  "fresh-cancelled-pause": 2,
+  "fresh-hermes-aptfail": 2,
+  "fresh-openbot-restartfail": 4,
+  "livedin-hermes-aptfail": 1,
+  "livedin-hermes-dotname": 1,
+  "livedin-hermes-netfail": 28,
+  "livedin-hermes-reviewfail": 33,
+  "livedin-hermes-run1": 9,
+  "livedin-hermes-verifiertimeout": 2,
+  "livedin-hermes-wifidrop": 1,
+  "livedin-openbot-aptfail": 1,
+  "livedin-openbot-dotname": 36,
+  "livedin-openbot-netfail": 27,
+  "livedin-openbot-restartfail": 14
+ },
+ "discarded_cost_usd": 3.4617,
+ "wifi_drops": 13
+}

@@ -1,0 +1,619 @@
+<title>The Commoner's Benchmark</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Ruled paper, ink-bordered plates with offset shadows, one dark panel for the headline numbers. */
+:root {
+  --paper: #f1ebdf;
+  --card: #f8f4ea;
+  --ink: #1b2f35;
+  --ink-2: #44575c;
+  --ink-3: #6f7f82;
+  --grid: #ddd5c6;
+  --hermes: #141414;
+  --iris: #2d6169;
+  --openbot: #b370bf;
+  --both: #9aa6a3;
+  --flag: #a8402f;
+  --on-dark: #f1ebdf;
+  --on-dark-2: #b9c3c1;
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue Condensed", Impact, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--hermes); outline-offset: 2px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.label { font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; }
+.num { font-variant-numeric: tabular-nums; }
+
+.strip { background: var(--ink); color: var(--on-dark); text-align: center; padding-block: 8px; }
+.strip .wrap { font-family: var(--mono); font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; }
+.mast { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding-block: 14px 10px; }
+.mast .name { font-family: var(--mono); font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+.mast .dbl { flex: 1 1 80px; min-width: 40px; height: 6px; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+.mast nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.mast nav a { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.mast nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.bar { height: 6px; background: var(--ink); }
+.meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 10px; color: var(--ink-2); }
+.marks { display: flex; align-items: center; gap: 10px; }
+.mark { width: 40px; height: 40px; border: 2px solid var(--ink); display: inline-block; flex: none; background-color: var(--card); background-position: center; background-size: cover; }
+.mark.h { background-image: url("{{icon_h}}"); }
+.mark.o { background-image: url("{{icon_o}}"); }
+.mark.sm { width: 24px; height: 24px; border-width: 1.5px; }
+.mark.xs { width: 18px; height: 18px; border-width: 1.5px; }
+.score .mark { width: 58px; height: 58px; border-color: var(--on-dark); }
+.mast .name { font-family: var(--display); font-weight: 800; font-size: 20px; letter-spacing: .06em; }
+
+.plate { background: var(--card); border: 3px solid var(--ink); box-shadow: 7px 7px 0 var(--ink); }
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; margin-block: 8px 48px; }
+.hero-left { display: flex; flex-direction: column; border-right: 3px solid var(--ink); min-width: 0; }
+.hero-title { padding: 28px 28px 22px; }
+.eyebrow { color: var(--flag); }
+.hero-title { container-type: inline-size; }
+h1 .nw { white-space: nowrap; }
+h1 { font-family: var(--display); font-weight: 800; font-size: min(96px, 16.8cqw); line-height: .9; letter-spacing: -.005em; text-transform: uppercase; margin: 14px 0 18px; text-wrap: balance; }
+.stand { font-size: 18.5px; max-width: 34em; margin: 0; }
+.scores { background: var(--ink); color: var(--on-dark); padding: 24px 28px 26px; flex: 1; }
+.scores .label { color: var(--on-dark-2); }
+.score-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+.score { min-width: 0; }
+.score .big { display: flex; align-items: flex-end; gap: 12px; }
+.score .pct { font-family: var(--display); font-weight: 800; font-size: 86px; line-height: .82; }
+.score .pct small { font-size: 26px; margin-left: 2px; }
+.score .who { margin-top: 10px; color: var(--on-dark); }
+.score .of { font-family: var(--mono); font-size: 12.5px; color: var(--on-dark-2); margin-top: 3px; }
+.ci { margin-top: 10px; }
+.ci svg { display: block; width: 100%; height: 30px; overflow: visible; }
+.scores p { margin: 16px 0 0; font-size: 16.5px; border-top: 1px solid #3c5157; padding-top: 14px; }
+.scores p b { font-weight: 600; }
+.hero-right { display: flex; flex-direction: column; min-width: 0; }
+.eye-head { display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--grid); color: var(--ink-2); }
+.eye { flex: 1; min-height: 360px; position: relative; }
+.eye canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.eye-cap { border-top: 3px solid var(--ink); padding: 12px 16px 14px; color: var(--ink-2); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; line-height: 1.6; text-transform: uppercase; }
+
+.section { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 36px; padding-block: 44px; border-top: 3px solid var(--ink); }
+.section > header .eyebrow { display: block; margin-bottom: 8px; }
+h2 { font-family: var(--display); font-weight: 800; font-size: 44px; line-height: .95; text-transform: uppercase; margin: 0 0 12px; text-wrap: balance; }
+.section > header p { color: var(--ink-2); font-size: 15.5px; margin: 0; }
+.stack { display: grid; gap: 28px; min-width: 0; }
+.prose { padding: 26px 30px; }
+.prose p { margin: 0 0 14px; max-width: 64ch; font-size: 18.5px; }
+.prose p:last-child { margin-bottom: 0; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.card { padding: 22px 24px; min-width: 0; }
+.card h3 { font-family: var(--mono); font-weight: 600; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 10px; }
+.card p { margin: 0 0 10px; font-size: 16px; }
+.card p:last-child { margin-bottom: 0; }
+
+.fig { padding: 22px 24px 18px; min-width: 0; }
+.fig-tag { display: inline-block; border: 1.5px solid var(--ink); padding: 2px 8px; margin-bottom: 12px; }
+.fig h3 { font-family: var(--mono); font-weight: 600; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 4px; }
+.fig .sub { color: var(--ink-2); font-size: 15px; margin: 0 0 12px; }
+.fig svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chartbox { overflow-x: auto; }
+.chartbox svg.wide { min-width: 620px; }
+.chartbox svg.half { min-width: 380px; }
+.fig svg text { font-family: var(--mono); fill: var(--ink-2); }
+.fig .note { font-style: italic; color: var(--ink-2); font-size: 15.5px; margin: 12px 0 0; max-width: 68ch; }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-top: 12px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 12px; height: 12px; display: inline-block; }
+.sw.h { background: var(--hermes); } .sw.o { background: var(--openbot); } .sw.b { background: var(--both); } .sw.n { background: transparent; border: 1.5px solid var(--ink-3); }
+.sw.line { height: 0; width: 22px; border-top: 2.5px solid; }
+.sw.dash { height: 0; width: 22px; border-top: 2.5px dashed; }
+.figrow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.seg { display: inline-flex; border: 1.5px solid var(--ink); margin-bottom: 12px; }
+.seg button { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; background: transparent; color: var(--ink); border: 0; padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1.5px solid var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--on-dark); }
+
+table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
+.tablebox { overflow-x: auto; }
+.score-table th, .score-table td { padding: 9px 14px; border-bottom: 1px solid var(--grid); text-align: right; white-space: nowrap; }
+.score-table th:first-child, .score-table td:first-child { text-align: left; white-space: normal; }
+.score-table thead th { background: var(--paper); border-bottom: 2px solid var(--ink); }
+.score-table thead th .label { display: inline-flex; align-items: center; gap: 8px; }
+.score-table tr.grp td { background: var(--paper); font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); padding-top: 14px; }
+.score-table td.metric { font-weight: 600; }
+.score-table td.delta { font-family: var(--mono); font-size: 13.5px; color: var(--ink-2); }
+.score-table td.delta.h, .score-table td.delta.o { color: var(--ink); }
+.score-table td.delta b { font-weight: 600; }
+
+.controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.controls label { font-family: var(--mono); font-size: 12.5px; letter-spacing: .06em; display: inline-flex; gap: 8px; align-items: center; }
+.controls select { font-family: var(--mono); font-size: 13px; padding: 5px 8px; border: 1.5px solid var(--ink); background: var(--card); color: var(--ink); }
+.controls input { accent-color: var(--ink); width: 16px; height: 16px; }
+.count { color: var(--ink-2); margin-left: auto; }
+.ledger th, .ledger td { padding: 8px 10px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+.legend-h { display: inline-flex; align-items: center; gap: 7px; }
+.ledger thead th { position: sticky; top: 0; background: var(--paper); border-bottom: 2px solid var(--ink); }
+.ledger td.task { font-family: var(--mono); font-size: 13.5px; white-space: nowrap; }
+.ledger td.fam { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.ledger td.res { white-space: nowrap; font-family: var(--mono); font-size: 13px; }
+.res .ok { font-weight: 600; color: var(--ink); }
+.res .no { color: var(--flag); font-weight: 600; }
+.res .dim { color: var(--ink-3); }
+.ledger td.notecell { font-size: 14.5px; color: var(--ink-2); min-width: 180px; }
+.ledger tr.split td { background: #efe7d6; }
+.ledgerbox { max-height: 640px; overflow: auto; border-top: 2px solid var(--ink); }
+
+.quote { padding: 22px 24px; border-left: 8px solid var(--ink); min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.quote.h { border-left-color: var(--hermes); }
+.quote.o { border-left-color: var(--openbot); }
+.quote .label { color: var(--ink-2); }
+.quote blockquote { margin: 0; font-style: italic; font-size: 17.5px; line-height: 1.5; }
+.quote blockquote code { font-style: normal; font-family: var(--mono); font-size: 14px; }
+.quote p { margin: 0; font-size: 15.5px; }
+.quote p b { font-weight: 600; }
+
+.sens th, .sens td { padding: 7px 10px; border-bottom: 1px solid var(--grid); text-align: right; font-size: 15px; }
+.sens th:first-child, .sens td:first-child { text-align: left; }
+.sens thead th { border-bottom: 2px solid var(--ink); font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; }
+
+footer { border-top: 6px solid var(--ink); margin-top: 12px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 14px 40px; color: var(--ink-2); }
+
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--on-dark); font-family: var(--mono); font-size: 12.5px; line-height: 1.5; padding: 8px 10px; max-width: 280px; }
+#tip b { font-weight: 600; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-left { border-right: 0; border-bottom: 3px solid var(--ink); }
+  .eye { min-height: 300px; }
+  .section { grid-template-columns: 1fr; gap: 18px; }
+}
+@media (max-width: 640px) {
+  .cards, .figrow { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .score .pct { font-size: 64px; }
+  .hero-title, .scores { padding-left: 18px; padding-right: 18px; }
+  .prose { padding: 20px; }
+  h2 { font-size: 36px; }
+  .plate { box-shadow: 5px 5px 0 var(--ink); }
+  .mast nav { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="strip"><div class="wrap">Terminal-Bench 2.0 &middot; DeepSeek V4.1 Flash at high effort</div></div>
+
+<div class="wrap">
+  <div class="mast">
+    <div class="name">The Commoner's Benchmark</div>
+    <div class="dbl" aria-hidden="true"></div>
+    <nav aria-label="Sections">
+      <a href="#verdict">Verdict</a><a href="#method">Method</a><a href="#scoreboard">Scoreboard</a><a href="#learning">Learning</a><a href="#tasks">Tasks</a><a href="#failures">Failures</a><a href="#caveats">Caveats</a>
+    </nav>
+  </div>
+  <div class="bar"></div>
+  <div class="meta">
+    <div class="marks"><span class="mark h" aria-hidden="true"></span><span class="mark o" aria-hidden="true"></span><span class="label">{{n_tasks}} tasks &middot; 2 harnesses &middot; 2 tracks &middot; {{n_trials}} graded trials</span></div>
+    <div class="label">Prepared Nov 16, 2026</div>
+  </div>
+
+  <section class="hero plate" aria-labelledby="title">
+    <div class="hero-left">
+      <div class="hero-title">
+        <div class="label eyebrow">Harness comparison</div>
+        <h1 id="title"><span class="nw">Hermes Agent</span> <span class="nw">vs OpenBot</span></h1>
+        <p class="stand">Two agent harnesses, one inexpensive model, the same {{n_tasks}} terminal tasks. Each harness ran every task from a clean start, then again with a profile that kept what it learned from one task to the next. This is what someone spending a few dollars on a cheap model can expect from each.</p>
+      </div>
+      <div class="scores">
+        <div class="label">Tasks solved &middot; clean start</div>
+        <div class="score-row">
+          <div class="score">
+            <div class="big"><span class="mark h" aria-hidden="true"></span><span class="pct num">{{fh_pct}}<small>%</small></span></div>
+            <div class="label who">Hermes Agent &middot; Nous Research</div>
+            <div class="of num">{{fh_n}} of {{n_tasks}} &middot; 95% interval {{fh_ci}}</div>
+            <div class="ci" data-ci="fresh/hermes"></div>
+          </div>
+          <div class="score">
+            <div class="big"><span class="mark o" aria-hidden="true"></span><span class="pct num">{{fo_pct}}<small>%</small></span></div>
+            <div class="label who">OpenBot</div>
+            <div class="of num">{{fo_n}} of {{n_tasks}} &middot; 95% interval {{fo_ci}}</div>
+            <div class="ci" data-ci="fresh/openbot"></div>
+          </div>
+        </div>
+        <p><b>Hermes leads by {{gap_f}} points</b>, and by {{gap_l}} with a lived-in profile ({{lh_pct}}% to {{lo_pct}}%). The intervals overlap, so on {{n_tasks}} tasks the lead is likely but not settled.</p>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="eye-head label"><span>Same machine, model and settings</span><span>{{n_trials}} trials</span></div>
+      <div class="eye" aria-hidden="true"><canvas id="eye"></canvas></div>
+      <div class="eye-cap">Every trial was watched to the end. Crashes, timeouts and reruns are listed under Failures and Caveats.</div>
+    </div>
+  </section>
+
+  <section class="section" id="verdict">
+    <header><span class="label eyebrow">Verdict</span><h2>The short of it</h2><p>What the numbers support, and how far.</p></header>
+    <div class="stack">
+      <div class="plate prose">
+        <p><b>Hermes Agent solved more tasks than OpenBot in both tracks:</b> {{fh_n}} to {{fo_n}} from a clean start, and {{lh_n}} to {{lo_n}} with a lived-in profile. From a clean start, the lead comes from systems and security tasks and from science and math. With a lived-in profile it spreads across more families.</p>
+        <p>OpenBot was cheaper. From a clean start it spent {{fo_cps}} per solved task against Hermes's {{fh_cps}}. With learning included, the gap widens to {{lo_cps_l}} against {{lh_cps_l}}, because Hermes's learning step costs far more than OpenBot's.</p>
+        <p>The lead is real in this run but small. On the same {{n_tasks}} tasks, Hermes solved {{f_only_h}} that OpenBot missed, and OpenBot solved {{f_only_o}} that Hermes missed. A split that uneven would turn up by chance about one time in {{f_chance}}, so a second run could narrow it.</p>
+      </div>
+      <div class="plate fig">
+        <span class="label fig-tag">Head to head</span>
+        <h3>Where the gap comes from</h3>
+        <p class="sub">Each of the {{n_tasks}} tasks, sorted by which harness solved it.</p>
+        <div class="chartbox"><svg id="h2h" class="wide" viewBox="0 0 900 190" role="img" aria-label="Head to head split of tasks"></svg></div>
+        <div class="legend label"><span><i class="sw b"></i>Both solved</span><span><i class="mark xs h"></i><i class="sw h"></i>Only Hermes</span><span><i class="mark xs o"></i><i class="sw o"></i>Only OpenBot</span><span><i class="sw n"></i>Neither</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method">
+    <header><span class="label eyebrow">Method</span><h2>How it was run</h2><p>The code, data and full incident log are on <a href="https://github.com/conficked/commoners-benchmark">GitHub</a>.</p></header>
+    <div class="cards">
+      <div class="plate card">
+        <h3>The tasks</h3>
+        <p>All {{n_tasks}} tasks of Terminal-Bench 2.0: building software, fixing code, configuring servers, cracking puzzles, training small models. Each runs in its own container and is graded by its own tests.</p>
+        <p>One attempt per task, with the benchmark's standard time limits.</p>
+      </div>
+      <div class="plate card">
+        <h3>Matched settings</h3>
+        <p>Both harnesses used DeepSeek V4.1 Flash through OpenRouter at reasoning effort high. Each harness's own records confirm the model and effort on every trial.</p>
+        <p>Same machine, same prompt, default skills and settings. Hermes Agent v0.23.1 ran as its command-line tool. OpenBot 0.65.0 ran as its desktop app, driven through its own window.</p>
+      </div>
+      <div class="plate card">
+        <h3>Two tracks</h3>
+        <p><b>Clean start:</b> a fresh profile for every task.</p>
+        <p><b>Lived-in:</b> one profile per harness, carried through all {{n_tasks}} tasks in a fixed order. After each task the harness ran its own learning step. Hermes reviews the session and writes skills and memories. OpenBot reviews the thread and writes memories.</p>
+      </div>
+      <div class="plate card">
+        <h3>Scoring and cost</h3>
+        <p>A task counts as solved only when its tests pass. A task whose grading ran out of time counts as a failure.</p>
+        <p>Cost uses each harness's own token counts at one flat rate: ${{p_in}} per million input tokens, ${{p_cached}} cached and ${{p_out}} output. Time is the harness's own working time, without startup.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="scoreboard">
+    <header><span class="label eyebrow">Scoreboard</span><h2>Scoreboard</h2><p>Headline figures first, then where they come from.</p></header>
+    <div class="stack">
+      <div class="plate tablebox">
+        <table class="score-table num">
+          <thead><tr><th class="label">Measure</th><th><span class="label"><i class="mark sm h"></i>Hermes Agent</span></th><th><span class="label"><i class="mark sm o"></i>OpenBot</span></th><th class="label">Difference</th></tr></thead>
+          <tbody>
+            <tr class="grp"><td colspan="4">Clean start</td></tr>
+            <tr><td class="metric">Tasks solved</td><td>{{fh_n}} ({{fh_pct}}%)</td><td>{{fo_n}} ({{fo_pct}}%)</td><td class="delta h"><b>+{{d_f_n}}</b> Hermes</td></tr>
+            <tr><td class="metric">Cost per solved task</td><td>{{fh_cps}}</td><td>{{fo_cps}}</td><td class="delta o"><b>{{d_f_cps}}</b> less, OpenBot</td></tr>
+            <tr><td class="metric">Median cost per task</td><td>{{fh_mc}}</td><td>{{fo_mc}}</td><td class="delta o"><b>{{d_f_mc}}</b> less, OpenBot</td></tr>
+            <tr><td class="metric">Median working time</td><td>{{fh_mt}} min</td><td>{{fo_mt}} min</td><td class="delta o"><b>{{d_f_mt}} min</b> faster, OpenBot</td></tr>
+            <tr><td class="metric">Slowest 5% of tasks take at least</td><td>{{fh_p95}} min</td><td>{{fo_p95}} min</td><td class="delta">about even</td></tr>
+            <tr><td class="metric">Median tokens per task</td><td>{{fh_tok}}</td><td>{{fo_tok}}</td><td class="delta">Hermes uses {{tok_ratio}}x, mostly cached</td></tr>
+            <tr><td class="metric">Ran out of time</td><td>{{fh_to}}</td><td>{{fo_to}}</td><td class="delta"></td></tr>
+            <tr><td class="metric">Harness crashed mid-task</td><td>{{fh_cr}}</td><td>{{fo_cr}}</td><td class="delta"></td></tr>
+            <tr class="grp"><td colspan="4">Lived-in profile</td></tr>
+            <tr><td class="metric">Tasks solved</td><td>{{lh_n}} ({{lh_pct}}%)</td><td>{{lo_n}} ({{lo_pct}}%)</td><td class="delta h"><b>+{{d_l_n}}</b> Hermes</td></tr>
+            <tr><td class="metric">Cost per solved task, learning included</td><td>{{lh_cps_l}}</td><td>{{lo_cps_l}}</td><td class="delta o"><b>{{d_l_cps}}</b> less, OpenBot</td></tr>
+            <tr><td class="metric">Learning step, all {{n_tasks}} tasks</td><td>{{lh_lc}}</td><td>{{lo_lc}}</td><td class="delta"></td></tr>
+            <tr><td class="metric">Ran out of time</td><td>{{lh_to}}</td><td>{{lo_to}}</td><td class="delta"></td></tr>
+            <tr><td class="metric">Harness crashed mid-task</td><td>{{lh_cr}}</td><td>{{lo_cr}}</td><td class="delta"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="plate fig">
+        <span class="label fig-tag">By family</span>
+        <h3>Tasks solved by family</h3>
+        <p class="sub">Terminal-Bench's own categories, grouped into six families. The number of tasks in each is in brackets.</p>
+        <div class="seg" role="group" aria-label="Track"><button type="button" id="fam-fresh" aria-pressed="true">Clean start</button><button type="button" id="fam-livedin" aria-pressed="false">Lived-in</button></div>
+        <div class="chartbox"><svg id="fam" class="wide" viewBox="0 0 900 330" role="img" aria-label="Share of tasks solved by family"></svg></div>
+        <div class="legend label"><span><i class="mark xs h"></i><i class="sw h"></i>Hermes Agent</span><span><i class="mark xs o"></i><i class="sw o"></i>OpenBot</span></div>
+        <p class="note">From a clean start, the gap sits in systems and security ({{fam_ss_h}} to {{fam_ss_o}} of {{fam_ss_n}}) and science and math ({{fam_sm_h}} to {{fam_sm_o}} of {{fam_sm_n}}). With a lived-in profile, OpenBot draws level in science and math, at {{fam_sm_lo}} each. Families with few tasks swing a lot on one result.</p>
+      </div>
+
+      <div class="figrow">
+        <div class="plate fig">
+          <span class="label fig-tag">By difficulty</span>
+          <h3>Solved by difficulty</h3>
+          <p class="sub">Terminal-Bench's own rating. Clean start.</p>
+          <div class="chartbox"><svg id="diff" class="half" viewBox="0 0 440 300" role="img" aria-label="Share of tasks solved by difficulty"></svg></div>
+          <div class="legend label"><span><i class="mark xs h"></i><i class="sw h"></i>Hermes</span><span><i class="mark xs o"></i><i class="sw o"></i>OpenBot</span></div>
+          <p class="note">Hard tasks separate them most: {{d_hard_h}} to {{d_hard_o}} of {{d_hard_n}}.</p>
+        </div>
+        <div class="plate fig">
+          <span class="label fig-tag">Cost and score</span>
+          <h3>What a solved task costs</h3>
+          <p class="sub">Up and to the left is better. Lived-in includes the learning step.</p>
+          <div class="chartbox"><svg id="scatter" class="half" viewBox="0 0 440 300" role="img" aria-label="Share solved against cost per solved task"></svg></div>
+          <div class="legend label"><span><i class="mark xs h"></i><i class="sw h"></i>Hermes</span><span><i class="mark xs o"></i><i class="sw o"></i>OpenBot</span><span>&#9679; Clean start</span><span>&#9632; Lived-in</span></div>
+          <p class="note">Hermes buys its extra solves with more tokens. Its learning step makes the lived-in Hermes the costliest setup, at {{lh_cps_l}} per solved task.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="learning">
+    <header><span class="label eyebrow">Lived-in track</span><h2>Learning on the job</h2><p>The same profile carried through all {{n_tasks}} tasks, in a fixed order.</p></header>
+    <div class="stack">
+      <div class="plate fig">
+        <span class="label fig-tag">Running total</span>
+        <h3>Tasks solved so far</h3>
+        <p class="sub">Solid lines keep their profile from task to task. Dashed lines are the same tasks from a clean start, in the same order.</p>
+        <div class="chartbox"><svg id="curve" class="wide" viewBox="0 0 900 360" role="img" aria-label="Running total of tasks solved in order"></svg></div>
+        <div class="legend label"><span><i class="mark xs h"></i><i class="sw line" style="border-color:var(--hermes)"></i>Hermes, lived-in</span><span><i class="sw dash" style="border-color:var(--hermes)"></i>Hermes, clean start</span><span><i class="mark xs o"></i><i class="sw line" style="border-color:var(--openbot)"></i>OpenBot, lived-in</span><span><i class="sw dash" style="border-color:var(--openbot)"></i>OpenBot, clean start</span></div>
+        <p class="note">Both harnesses finished {{l_gain}} tasks ahead of their clean-start runs. A single run varies on its own, and a gain this size could come from chance about one time in {{l_chance}}, so treat it as a hint rather than a measurement.</p>
+      </div>
+      <div class="cards">
+        <div class="plate card">
+          <h3><i class="mark sm h" style="vertical-align:-6px;margin-right:8px"></i>Hermes Agent</h3>
+          <p>Reviewed every task. Its skill library grew from {{sk_start}} bundled skills to {{sk_end}}, and it saved memories after {{h_mem_tasks}} tasks.</p>
+          <p>The learning step cost {{lh_lc}} over the run, about half of what the tasks themselves cost ({{lh_tc}}).</p>
+        </div>
+        <div class="plate card">
+          <h3><i class="mark sm o" style="vertical-align:-6px;margin-right:8px"></i>OpenBot</h3>
+          <p>Reviewed {{o_rev}} tasks and ended with {{o_mem}} memories. By design it skipped {{o_skip}}: after a stopped turn, or when the thread had nothing new to save. One review was lost when the app crashed.</p>
+          <p>The learning step cost {{lo_lc}} over the run. OpenBot runs it at the lowest reasoning effort.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tasks">
+    <header><span class="label eyebrow">Ledger</span><h2>Every task</h2><p>All {{n_tasks}} tasks, with each harness's result, working time and cost. Rows where only one harness solved the task are shaded.</p></header>
+    <div class="plate fig">
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Track" style="margin:0"><button type="button" id="led-fresh" aria-pressed="true">Clean start</button><button type="button" id="led-livedin" aria-pressed="false">Lived-in</button></div>
+        <label for="led-fam">Family <select id="led-fam"><option value="">All</option></select></label>
+        <label for="led-split"><input type="checkbox" id="led-split"> Split results only</label>
+        <span class="count label" id="led-count"></span>
+      </div>
+      <div class="ledgerbox">
+        <table class="ledger num">
+          <thead><tr><th class="label">Task</th><th class="label">Family</th><th class="label">Difficulty</th><th><span class="label legend-h"><i class="mark xs h"></i>Hermes</span></th><th><span class="label legend-h"><i class="mark xs o"></i>OpenBot</span></th><th class="label">Note</th></tr></thead>
+          <tbody id="led-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="failures">
+    <header><span class="label eyebrow">Failures</span><h2>Notable failures</h2><p>Quoted word for word from the run logs.</p></header>
+    <div class="cards">
+      <div class="plate quote o">
+        <div class="label legend-h"><i class="mark sm o"></i>OpenBot &middot; cancel-async-tasks &middot; clean start</div>
+        <blockquote>&ldquo;Checked by running: peak concurrency was exactly 3 for 10 jobs at limit 3, all jobs completed, error path and cleanup verified [&hellip;] Sending SIGINT mid-run printed cleanup for both running jobs before KeyboardInterrupt propagated, and unstarted jobs never began.&rdquo;</blockquote>
+        <p><b>The tests found:</b> with more tasks than open slots, the cleanup message printed 0 of the 2 times required. Hermes Agent passed this task in {{q_cancel_h_min}} minutes.</p>
+      </div>
+      <div class="plate quote h">
+        <div class="label legend-h"><i class="mark sm h"></i>Hermes Agent &middot; polyglot-c-py &middot; clean start</div>
+        <blockquote>&ldquo;Verified (all with real runs): <code>gcc /app/polyglot/main.py.c -o /app/polyglot/cmain</code> &mdash; exit 0, empty stderr.&rdquo;</blockquote>
+        <p><b>The tests found:</b> the task wanted <code>main.py.c</code> alone in that folder. Hermes left its compiled test program, <code>cmain</code>, beside it. OpenBot passed.</p>
+      </div>
+      <div class="plate quote o">
+        <div class="label legend-h"><i class="mark sm o"></i>OpenBot &middot; compile-compcert &middot; clean start</div>
+        <blockquote>&ldquo;Target crashed&rdquo;</blockquote>
+        <p>The agent's build of the CompCert compiler filled the task's {{q_cc_limit}} memory limit, with compiler processes holding {{q_cc_task}}. The kernel stopped OpenBot's own window process first, a {{q_cc_victim}} process. Chromium-based apps mark that process as the first to go, so the session ended with the work unfinished.</p>
+      </div>
+      <div class="plate quote h">
+        <div class="label legend-h"><i class="mark sm h"></i>Hermes Agent &middot; caffe-cifar-10 &middot; lived-in</div>
+        <blockquote>&ldquo;Error: Gateway disconnected; turn outcome is unknown.&rdquo;</blockquote>
+        <p>The same kind of failure with a different victim. During a 12-process C++ build in a {{q_caffe_limit}} container, the kernel stopped the largest single process, which was Hermes's own gateway at {{q_caffe_victim}}. Across all kept trials, OpenBot's own processes were stopped this way in {{oom_o}} and Hermes's in {{oom_h}}.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="caveats">
+    <header><span class="label eyebrow">Caveats</span><h2>Read before quoting</h2><p>Limits of a single run on one model.</p></header>
+    <div class="stack">
+      <div class="cards">
+        <div class="plate card">
+          <h3>A small sample</h3>
+          <p>{{n_tasks}} tasks is a small sample. The 95% intervals for the two harnesses overlap in both tracks, and the head-to-head split ({{f_only_h}} to {{f_only_o}}) would turn up by chance about one time in {{f_chance}}.</p>
+        </div>
+        <div class="plate card">
+          <h3>One model, one setting, one attempt</h3>
+          <p>These results hold for DeepSeek V4.1 Flash at high effort, with one attempt per task. A stronger model, another effort level or repeated attempts could change the order.</p>
+        </div>
+        <div class="plate card">
+          <h3>How OpenBot was run</h3>
+          <p>OpenBot is a desktop app. It ran inside each task's container, and a script typed the task into its window and waited for it to finish, the way a person would. Hermes ran as its command-line tool. When our script failed, the attempt was thrown out and rerun.</p>
+        </div>
+        <div class="plate card">
+          <h3>Reruns</h3>
+          <p>{{disc_n}} attempts were thrown out because our setup or automation broke them, or because a rollback undid them. Their {{disc_cost}} of model use is not counted anywhere. The same rule applied to both harnesses.</p>
+        </div>
+      </div>
+      <div class="plate fig">
+        <span class="label fig-tag">Check</span>
+        <h3>Scored on first attempts instead</h3>
+        <p class="sub">Every task scored by its first graded attempt, including attempts later thrown out.</p>
+        <div class="tablebox">
+          <table class="sens num">
+            <thead><tr><th>Track</th><th>Hermes, kept</th><th>Hermes, first attempt</th><th>OpenBot, kept</th><th>OpenBot, first attempt</th></tr></thead>
+            <tbody>
+              <tr><td>Clean start</td><td>{{s_fh_k}}</td><td>{{s_fh_f}}</td><td>{{s_fo_k}}</td><td>{{s_fo_f}}</td></tr>
+              <tr><td>Lived-in</td><td>{{s_lh_k}}</td><td>{{s_lh_f}}</td><td>{{s_lo_k}}</td><td>{{s_lo_f}}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Hermes leads either way.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer><div class="wrap"><span class="label">The Commoner's Benchmark &middot; <a href="https://github.com/conficked/commoners-benchmark">Code and data</a></span><span class="label">Prepared Nov 16, 2026</span></div></footer>
+<div id="tip" hidden></div>
+
+<script>
+const D = /*DATA*/;
+const NS = "http://www.w3.org/2000/svg";
+const C = { h: "var(--hermes)", o: "var(--openbot)", both: "var(--both)", grid: "var(--grid)", ink: "var(--ink)", ink2: "var(--ink-2)", card: "var(--card)" };
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const txt = (parent, x, y, s, attrs = {}) => { const t = el("text", { x, y, "font-size": 12, ...attrs }, parent); if (attrs.fill) t.style.fill = attrs.fill; t.textContent = s; return t; };
+const pct = (k, n) => Math.round(100 * k / n);
+const tip = document.getElementById("tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.hidden = false; moveTip(ev); }
+function moveTip(ev) { const w = tip.offsetWidth, h = tip.offsetHeight; let x = ev.clientX + 14, y = ev.clientY + 14; if (x + w > innerWidth - 8) x = ev.clientX - w - 14; if (y + h > innerHeight - 8) y = ev.clientY - h - 14; tip.style.left = x + "px"; tip.style.top = y + "px"; }
+function hideTip() { tip.hidden = true; }
+function hover(node, html) { node.addEventListener("mouseenter", e => showTip(e, html)); node.addEventListener("mousemove", moveTip); node.addEventListener("mouseleave", hideTip); }
+const topRounded = (x, y, w, h, r = 4) => { r = Math.min(r, h, w / 2); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+
+function ciBars() {
+  document.querySelectorAll("[data-ci]").forEach(box => {
+    const s = D.scoreboard[box.dataset.ci];
+    const svg = el("svg", { viewBox: "0 0 300 30", preserveAspectRatio: "none" }, box);
+    const X = v => 4 + v * 292;
+    el("line", { x1: X(0), x2: X(1), y1: 12, y2: 12, stroke: "#3c5157", "stroke-width": 2 }, svg);
+    [0, .25, .5, .75, 1].forEach(v => el("line", { x1: X(v), x2: X(v), y1: 8, y2: 16, stroke: "#5c7076", "stroke-width": 1.5 }, svg));
+    const col = box.dataset.ci.endsWith("hermes") ? C.h : C.o;
+    const edge = box.dataset.ci.endsWith("hermes") ? "var(--on-dark)" : "none";
+    el("rect", { x: X(s.ci[0]), y: 7, width: X(s.ci[1]) - X(s.ci[0]), height: 10, fill: col, stroke: edge, "stroke-width": 1.5 }, svg);
+    el("circle", { cx: X(s.rate), cy: 12, r: 6, fill: "var(--on-dark)", stroke: box.dataset.ci.endsWith("hermes") ? "var(--on-dark)" : col, "stroke-width": 2.5 }, svg);
+    [["0", 0], ["50", .5], ["100%", 1]].forEach(([l, v]) => txt(svg, X(v), 29, l, { "font-size": 10, "text-anchor": v === 0 ? "start" : v === 1 ? "end" : "middle", fill: "var(--on-dark-2)", "font-family": "IBM Plex Mono, monospace" }));
+  });
+}
+
+function h2h() {
+  const svg = document.getElementById("h2h"), rows = [["Clean start", D.paired["fresh: hermes vs openbot"]], ["Lived-in", D.paired["livedin: hermes vs openbot"]]];
+  const x0 = 130, W = 750, n = 89;
+  rows.forEach(([name, p], i) => {
+    const y = 26 + i * 80;
+    txt(svg, 0, y + 25, name.toUpperCase(), { "font-size": 12, "letter-spacing": "1.2" });
+    let x = x0;
+    [["Both solved", p.both, C.both], ["Only Hermes", p.only_first, C.h], ["Only OpenBot", p.only_second, C.o], ["Neither", p.neither, "none"]].forEach(([lab, v, col]) => {
+      const w = W * v / n;
+      const r = el("rect", { x: x + 1, y, width: Math.max(w - 2, 1), height: 40, fill: col === "none" ? "transparent" : col, stroke: col === "none" ? "var(--ink-3)" : "none", "stroke-width": 1.5 }, svg);
+      hover(r, `<b>${name}</b><br>${lab}: ${v} of ${n} tasks`);
+      const t = txt(svg, x + w / 2, y + 25, String(v), { "text-anchor": "middle", "font-size": 15, "font-weight": 600, fill: col === "none" ? "var(--ink-2)" : (lab === "Only Hermes" ? "var(--on-dark)" : "var(--ink)") });
+      t.style.pointerEvents = "none";
+      x += w;
+    });
+  });
+}
+
+function bars(svgId, cats, track, w, h, opts = {}) {
+  const svg = document.getElementById(svgId); svg.innerHTML = "";
+  const m = { l: 46, r: 8, t: 22, b: opts.bottom || 54 }, iw = w - m.l - m.r, ih = h - m.t - m.b;
+  const Y = v => m.t + ih * (1 - v);
+  [0, .25, .5, .75, 1].forEach(v => { el("line", { x1: m.l, x2: w - m.r, y1: Y(v), y2: Y(v), stroke: v === 0 ? C.ink : C.grid, "stroke-width": v === 0 ? 1.5 : 1 }, svg); txt(svg, m.l - 8, Y(v) + 4, `${v * 100}%`, { "text-anchor": "end", "font-size": 11 }); });
+  const gw = iw / cats.length, bw = Math.min(42, gw * .32);
+  cats.forEach(([name, rec], i) => {
+    const cx = m.l + gw * (i + .5);
+    [["hermes", C.h, -1], ["openbot", C.o, 1]].forEach(([hn, col, side]) => {
+      const k = rec[`${track}/${hn}`], v = k / rec.n, x = side < 0 ? cx - bw - 1 : cx + 1;
+      const p = el("path", { d: topRounded(x, Y(v), bw, Y(0) - Y(v)), fill: col }, svg);
+      hover(p, `<b>${hn === "hermes" ? "Hermes Agent" : "OpenBot"}</b> &middot; ${name}<br>${k} of ${rec.n} solved (${pct(k, rec.n)}%)`);
+      txt(svg, x + bw / 2, Y(v) - 6, `${pct(k, rec.n)}`, { "text-anchor": "middle", "font-size": 11, fill: "var(--ink-2)" });
+    });
+    const lines = opts.wrap ? opts.wrap(name) : [name];
+    lines.forEach((ln, j) => txt(svg, cx, Y(0) + 18 + j * 14, ln, { "text-anchor": "middle", "font-size": 11.5, fill: "var(--ink)" }));
+    txt(svg, cx, Y(0) + 18 + lines.length * 14, `(${rec.n})`, { "text-anchor": "middle", "font-size": 11 });
+  });
+}
+const famWrap = s => ({ "Software engineering": ["Software", "engineering"], "Systems and security": ["Systems and", "security"], "Science and math": ["Science", "and math"], "Machine learning": ["Machine", "learning"] }[s] || [s]);
+function fam(track) { bars("fam", Object.entries(D.families), track, 900, 330, { wrap: famWrap, bottom: 66 }); document.getElementById("fam-fresh").setAttribute("aria-pressed", track === "fresh"); document.getElementById("fam-livedin").setAttribute("aria-pressed", track === "livedin"); }
+
+function scatter() {
+  const svg = document.getElementById("scatter"), w = 440, h = 300, m = { l: 50, r: 16, t: 16, b: 44 };
+  const pts = [["fresh/hermes", "Hermes, clean start"], ["livedin/hermes", "Hermes, lived-in"], ["fresh/openbot", "OpenBot, clean start"], ["livedin/openbot", "OpenBot, lived-in"]].map(([k, l]) => { const s = D.scoreboard[k]; return { k, l, x: s.cost_per_solved_incl_learning ?? s.cost_per_solved, y: s.rate }; });
+  const xs = [.03, .09], ys = [.6, .85];
+  const X = v => m.l + (w - m.l - m.r) * (v - xs[0]) / (xs[1] - xs[0]), Y = v => m.t + (h - m.t - m.b) * (1 - (v - ys[0]) / (ys[1] - ys[0]));
+  [.6, .65, .7, .75, .8, .85].forEach(v => { el("line", { x1: m.l, x2: w - m.r, y1: Y(v), y2: Y(v), stroke: C.grid }, svg); txt(svg, m.l - 8, Y(v) + 4, `${Math.round(v * 100)}%`, { "text-anchor": "end", "font-size": 11 }); });
+  [.03, .05, .07, .09].forEach(v => { el("line", { x1: X(v), x2: X(v), y1: h - m.b, y2: h - m.b + 5, stroke: C.ink }, svg); txt(svg, X(v), h - m.b + 18, `$${v.toFixed(2)}`, { "text-anchor": "middle", "font-size": 11 }); });
+  el("line", { x1: m.l, x2: w - m.r, y1: h - m.b, y2: h - m.b, stroke: C.ink, "stroke-width": 1.5 }, svg);
+  txt(svg, (m.l + w - m.r) / 2, h - 6, "COST PER SOLVED TASK", { "text-anchor": "middle", "font-size": 10.5, "letter-spacing": "1" });
+  [["hermes", C.h], ["openbot", C.o]].forEach(([hn, col]) => { const a = pts.find(p => p.k === `fresh/${hn}`), b = pts.find(p => p.k === `livedin/${hn}`); el("line", { x1: X(a.x), y1: Y(a.y), x2: X(b.x), y2: Y(b.y), stroke: col, "stroke-width": 1.5, "stroke-dasharray": "3 3" }, svg); });
+  pts.forEach(p => {
+    const col = p.k.endsWith("hermes") ? C.h : C.o, lived = p.k.startsWith("livedin");
+    const mk = lived ? el("rect", { x: X(p.x) - 6, y: Y(p.y) - 6, width: 12, height: 12, fill: col, stroke: C.card, "stroke-width": 2 }, svg) : el("circle", { cx: X(p.x), cy: Y(p.y), r: 6.5, fill: col, stroke: C.card, "stroke-width": 2 }, svg);
+    hover(mk, `<b>${p.l}</b><br>${Math.round(p.y * 100)}% solved<br>$${p.x.toFixed(3)} per solved task`);
+    const right = X(p.x) < w - 150;
+    txt(svg, X(p.x) + (right ? 12 : -12), Y(p.y) + 4, p.l, { "text-anchor": right ? "start" : "end", "font-size": 11, fill: "var(--ink)" });
+  });
+}
+
+function curve() {
+  const svg = document.getElementById("curve"), w = 900, h = 360, m = { l: 46, r: 178, t: 14, b: 40 };
+  const n = 89, X = i => m.l + (w - m.l - m.r) * i / (n - 1), Y = v => m.t + (h - m.t - m.b) * (1 - v / 80);
+  [0, 20, 40, 60, 80].forEach(v => { el("line", { x1: m.l, x2: w - m.r, y1: Y(v), y2: Y(v), stroke: v === 0 ? C.ink : C.grid, "stroke-width": v === 0 ? 1.5 : 1 }, svg); txt(svg, m.l - 8, Y(v) + 4, String(v), { "text-anchor": "end", "font-size": 11 }); });
+  [1, 20, 40, 60, 89].forEach(i => txt(svg, X(i - 1), h - m.b + 18, String(i), { "text-anchor": "middle", "font-size": 11 }));
+  txt(svg, (m.l + w - m.r) / 2, h - 4, "TASK, IN THE ORDER RUN", { "text-anchor": "middle", "font-size": 10.5, "letter-spacing": "1" });
+  const series = [["livedin/hermes", C.h, false, "Hermes, lived-in"], ["fresh/hermes", C.h, true, "Hermes, clean"], ["livedin/openbot", C.o, false, "OpenBot, lived-in"], ["fresh/openbot", C.o, true, "OpenBot, clean"]];
+  series.forEach(([k, col, dash]) => el("polyline", { points: D.curve[k].map((v, i) => `${X(i)},${Y(v)}`).join(" "), fill: "none", stroke: col, "stroke-width": 2.25, "stroke-dasharray": dash ? "6 5" : "none", "stroke-linejoin": "round" }, svg));
+  const ends = series.map(([k, col, dash, l]) => ({ y: Y(D.curve[k][n - 1]), v: D.curve[k][n - 1], l, col }));
+  ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
+  ends.forEach(e => { txt(svg, X(n - 1) + 10, e.y + 4, `${e.v}  ${e.l}`, { "font-size": 11.5, fill: "var(--ink)" }); });
+  const cross = el("line", { y1: m.t, y2: h - m.b, stroke: C.ink2, "stroke-width": 1, visibility: "hidden" }, svg);
+  const hit = el("rect", { x: m.l, y: m.t, width: w - m.l - m.r, height: h - m.t - m.b, fill: "transparent" }, svg);
+  const order = D.ledger.slice().sort((a, b) => a.order - b.order);
+  hit.addEventListener("mousemove", ev => {
+    const r = svg.getBoundingClientRect(), sx = (ev.clientX - r.left) * w / r.width;
+    const i = Math.max(0, Math.min(n - 1, Math.round((sx - m.l) / (w - m.l - m.r) * (n - 1))));
+    cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("visibility", "visible");
+    showTip(ev, `<b>Task ${i + 1}: ${order[i].task}</b><br>` + series.map(([k, , , l]) => `${l}: ${D.curve[k][i]}`).join("<br>"));
+  });
+  hit.addEventListener("mouseleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+}
+
+function eye() {
+  const cv = document.getElementById("eye"), box = cv.parentElement;
+  const draw = () => {
+    const dpr = Math.min(2, window.devicePixelRatio || 1), W = box.clientWidth, H = box.clientHeight;
+    if (!W || !H) return;
+    cv.width = W * dpr; cv.height = H * dpr; const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cs = getComputedStyle(document.documentElement), ink = cs.getPropertyValue("--ink").trim(), teal = cs.getPropertyValue("--iris").trim();
+    g.fillStyle = cs.getPropertyValue("--card").trim(); g.fillRect(0, 0, W, H);
+    const cx = W / 2, cy = H * .5, ew = Math.min(W * .44, H * .62), eh = ew * .5, ir = eh * .78, step = Math.max(4.5, W / 120);
+    const lid = x => { const t = (x - cx) / ew; return Math.abs(t) >= 1 ? 0 : eh * Math.pow(1 - t * t, .9); };
+    for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+      const lh = lid(x), dy = y - cy, inside = Math.abs(dy) < lh;
+      const d = Math.hypot(x - cx, y - cy);
+      let dark = .05, col = ink;
+      if (inside) {
+        dark = .03;
+        if (d < ir) { col = teal; dark = .55 + .3 * (d / ir) + .12 * Math.sin(Math.atan2(y - cy, x - cx) * 9 + d * .3); if (d < ir * .42) { col = ink; dark = .95; } const hx = cx + ir * .2, hy = cy - ir * .22; if (Math.hypot(x - hx, y - hy) < ir * .14) dark = 0; }
+        const edge = lh - Math.abs(dy); if (edge < step * 1.2) { col = ink; dark = Math.max(dark, .7); }
+      } else {
+        const out = Math.abs(dy) - lh; if (lh > 0 && out < step * 3) { col = ink; dark = .28 * (1 - out / (step * 3)) + .05; }
+      }
+      const r = Math.sqrt(Math.max(0, Math.min(1, dark))) * step * .52;
+      if (r > .3) { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); }
+    }
+    g.strokeStyle = ink; g.lineWidth = 1.4;
+    for (let i = 0; i <= 34; i++) { const t = -0.92 + 1.84 * i / 34, x = cx + t * ew, y = cy - lid(x), a = -Math.PI / 2 + t * .9, L = eh * (.22 + .1 * Math.sin(i * 1.7)); g.beginPath(); g.moveTo(x, y - 2); g.lineTo(x + Math.cos(a) * L, y - 2 + Math.sin(a) * L); g.stroke(); }
+  };
+  draw(); new ResizeObserver(draw).observe(box);
+}
+
+const NOTE = r => [r.crash.includes("renderer") ? "App crashed (memory)" : "", r.crash.includes("gateway") ? "Gateway dropped" : "", r.to ? "Ran out of time" : "", r.vto ? "Grading ran out of time" : ""].filter(Boolean);
+let ledTrack = "fresh";
+function ledger() {
+  const fam = document.getElementById("led-fam").value, split = document.getElementById("led-split").checked, body = document.getElementById("led-body");
+  body.innerHTML = ""; let shown = 0;
+  D.ledger.forEach(e => {
+    const h = e[`${ledTrack}/hermes`], o = e[`${ledTrack}/openbot`], isSplit = h.p !== o.p;
+    if (fam && e.family !== fam) return; if (split && !isSplit) return; shown++;
+    const tr = document.createElement("tr"); if (isSplit) tr.className = "split";
+    const res = r => `<span class="${r.p ? "ok" : "no"}">${r.p ? "&#10003; Pass" : "&#10007; Fail"}</span> <span class="dim">&middot; ${r.min} min &middot; $${r.cost.toFixed(3)}</span>`;
+    const notes = [...NOTE(h).map(s => `Hermes: ${s.toLowerCase()}`), ...NOTE(o).map(s => `OpenBot: ${s.toLowerCase()}`)].join("; ");
+    tr.innerHTML = `<td class="task">${e.task}</td><td class="fam">${e.family}</td><td class="fam">${e.difficulty}</td><td class="res">${res(h)}</td><td class="res">${res(o)}</td><td class="notecell">${notes}</td>`;
+    body.appendChild(tr);
+  });
+  document.getElementById("led-count").textContent = `Showing ${shown} of ${D.ledger.length}`;
+  document.getElementById("led-fresh").setAttribute("aria-pressed", ledTrack === "fresh");
+  document.getElementById("led-livedin").setAttribute("aria-pressed", ledTrack === "livedin");
+}
+
+ciBars(); h2h(); fam("fresh");
+bars("diff", Object.entries(D.difficulty).map(([k, v]) => [k[0].toUpperCase() + k.slice(1), v]), "fresh", 440, 300);
+scatter(); curve(); eye();
+document.getElementById("fam-fresh").onclick = () => fam("fresh");
+document.getElementById("fam-livedin").onclick = () => fam("livedin");
+const famSel = document.getElementById("led-fam"); Object.keys(D.families).forEach(f => { const op = document.createElement("option"); op.value = f; op.textContent = f; famSel.appendChild(op); });
+famSel.onchange = ledger; document.getElementById("led-split").onchange = ledger;
+document.getElementById("led-fresh").onclick = () => { ledTrack = "fresh"; ledger(); };
+document.getElementById("led-livedin").onclick = () => { ledTrack = "livedin"; ledger(); };
+ledger();
+</script>
