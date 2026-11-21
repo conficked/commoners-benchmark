@@ -58,7 +58,7 @@ export default function scoreboard({ title = meta.options.title, rows: list = me
   put(1, 2, [...clean(title).slice(0, 12)].join(" "));
   put(4, 2, "track");
   put(4, 14, "harness");
-  for (const [r, c, len] of fields) for (let i = 0; i < len; i++) base[r + 1][c + 2 * i] = "‾";
+  for (const [r, c, len] of fields) for (let i = 0; i < len; i++) base[r + 1][c + 2 * i] = "¯";
 
   return (t) => {
     const v = t - LEAD + STEP;
