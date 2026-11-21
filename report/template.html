@@ -45,12 +45,10 @@ main, .top, .foot { max-width: 1100px; margin: 0 auto; padding-left: max(24px, e
 .duel { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: end; margin-top: 18px; }
 .side { margin: 0; display: grid; gap: 14px; }
 .side.o { justify-items: end; text-align: right; }
-.echo { font-size: clamp(4px, .72vw, 8px); line-height: 1; letter-spacing: .02em; }
-.side.h .echo { color: var(--h); } .side.o .echo { color: var(--o); }
 .id { display: flex; align-items: center; gap: 12px; }
 .side.o .id { flex-direction: row-reverse; }
-.id img { width: 44px; height: 44px; border: 1px solid var(--dim); display: block; }
-.id span { display: grid; font-size: 15px; }
+.logo { width: clamp(120px, 22vw, 220px); aspect-ratio: 1; object-fit: cover; display: block; border: 1px solid var(--faint); }
+.id span { display: grid; font-size: 16px; }
 .id small { color: var(--dim); font-size: 11px; }
 .big { font-size: clamp(8px, 1.9vw, 20px); line-height: 1.02; text-align: left; }
 .side.h .big { color: var(--h); } .side.o .big { color: var(--o); }
@@ -140,15 +138,15 @@ details[open] summary h2::after { content: "-"; }
     options='{"phrases":["same model.","same {{n_tasks}} tasks.","same machine.","one attempt each.","different harness."]}'></ascii-art>
   <div class="duel">
     <figure class="side h">
-      <pre class="echo" data-logo="{{icon_h}}" aria-hidden="true"></pre>
-      <div class="id"><img src="{{icon_h}}" alt="Hermes Agent logo"><span>hermes agent<small>v0.23.1 · cli</small></span></div>
+      <img class="logo" src="{{icon_h}}" alt="Hermes Agent logo">
+      <div class="id"><span>hermes agent<small>v0.23.1 · cli</small></span></div>
       <pre class="big" data-text="{{fh_pct}}%" aria-label="{{fh_pct}} percent solved"></pre>
       <div class="sub">{{fh_n}}/{{n_tasks}} solved · 95% ci {{fh_ci}}</div>
     </figure>
     <div class="vs">vs</div>
     <figure class="side o">
-      <pre class="echo" data-logo="{{icon_o}}" aria-hidden="true"></pre>
-      <div class="id"><img src="{{icon_o}}" alt="OpenBot logo"><span>openbot<small>0.65.0 · desktop app</small></span></div>
+      <img class="logo" src="{{icon_o}}" alt="OpenBot logo">
+      <div class="id"><span>openbot<small>0.65.0 · desktop app</small></span></div>
       <pre class="big" data-text="{{fo_pct}}%" aria-label="{{fo_pct}} percent solved"></pre>
       <div class="sub">{{fo_n}}/{{n_tasks}} solved · 95% ci {{fo_ci}}</div>
     </figure>
@@ -300,36 +298,6 @@ const REPLAYS = [
     return grid.map((r) => r.join("").replace(/\s+$/, "")).join("\n");
   }
   document.querySelectorAll(".big").forEach((el) => { el.textContent = bigText(el.dataset.text); });
-
-  // ── living ascii echoes of the logos ──
-  const RAMP = " .:-=+*#%@";
-  document.querySelectorAll(".echo").forEach((pre) => {
-    const img = new Image();
-    img.onload = () => {
-      const cols = 46, rows = 23;
-      const c = document.createElement("canvas"); c.width = cols; c.height = rows;
-      const g = c.getContext("2d"); g.drawImage(img, 0, 0, cols, rows);
-      const px = g.getImageData(0, 0, cols, rows).data;
-      const lum = [];
-      for (let i = 0; i < cols * rows; i++) lum.push((0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2]) / 255);
-      const lo = Math.min(...lum), hi = Math.max(...lum);
-      const level = lum.map((v) => Math.round((1 - (v - lo) / Math.max(1e-6, hi - lo)) * (RAMP.length - 1)));
-      const draw = (lv) => { let s = ""; for (let r = 0; r < rows; r++) { for (let k = 0; k < cols; k++) s += RAMP[lv[r * cols + k]]; s += "\n"; } pre.textContent = s.trimEnd(); };
-      draw(level);
-      if (still) return;
-      const live = level.slice();
-      setInterval(() => {
-        if (document.hidden) return;
-        for (let n = 0; n < 40; n++) {
-          const i = Math.floor(Math.random() * live.length);
-          live[i] = Math.max(0, Math.min(RAMP.length - 1, level[i] + (Math.random() < 0.5 ? -1 : 1)));
-        }
-        for (let n = 0; n < 60; n++) { const i = Math.floor(Math.random() * live.length); live[i] = level[i]; }
-        draw(live);
-      }, 110);
-    };
-    img.src = pre.dataset.logo;
-  });
 
   // ── scoreboard ──
   (() => {
