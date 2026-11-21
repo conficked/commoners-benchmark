@@ -28,6 +28,7 @@ is consistent across both tracks but within the margin of error for 89 tasks.
 | Path | What it is |
 |---|---|
 | `index.html` | The report. Built by `report/build_report.py`; every number in it comes from `analysis/data/` |
+| `pieces/` | Two custom [ascii.rest](https://ascii.rest) pieces the report animates: the split-flap scoreboard and the terminal replays |
 | `analysis/data/` | The datasets: one row per kept trial, discarded attempts, learning steps, memory kills, summary |
 | `analysis/README.md` | Field definitions and how cost and time are measured |
 | `analysis/disclosures.md` | Every incident, rerun and rollback, and how it affects the results |
